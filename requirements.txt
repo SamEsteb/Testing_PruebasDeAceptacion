@@ -1,0 +1,7 @@
+flask
+behave
+requests
+Flask
+Flask-SQLAlchemy
+Werkzeug
+python-dotenv

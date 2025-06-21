@@ -1,0 +1,24 @@
+[D] ./
+    [A] .env
+    [A] .gitignore
+    [A] crear_db.py
+    [A] DBManager.py
+    [A] main.py
+    [A] README.md
+    [A] requirements.txt
+    [A] tasks.json
+    [D] app/
+        [A] __init__.py
+        [D] routes/
+            [A] auth_routes.py
+            [A] estudiante_routes.py
+            [A] profesor_routes.py
+            [A] __init__.py
+        [D] services/
+            [A] __init__.py
+    [D] database/
+        [A] models.py
+    [D] feature/
+        [A] crear_tarea.feature
+        [D] steps/
+            [A] steps.py
