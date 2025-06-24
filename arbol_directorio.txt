@@ -10,9 +10,6 @@
     [D] app/
         [A] __init__.py
         [D] routes/
-            [A] auth_routes.py
-            [A] estudiante_routes.py
-            [A] profesor_routes.py
             [A] __init__.py
         [D] services/
             [A] __init__.py
@@ -22,3 +19,5 @@
         [A] crear_tarea.feature
         [D] steps/
             [A] steps.py
+    [D] instance/
+        [A] database.db
