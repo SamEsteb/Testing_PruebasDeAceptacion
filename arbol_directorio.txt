@@ -16,8 +16,9 @@
     [D] database/
         [A] models.py
     [D] feature/
-        [A] crear_tarea.feature
+        [A] crear_serie.feature
+        [A] environment.py
         [D] steps/
-            [A] steps.py
+            [A] step_crear_serie.py
     [D] instance/
         [A] database.db

@@ -1,6 +1,5 @@
 from app import create_app
 from DBManager import db
-from database import models
 
 def before_all(context):
     # Crear app y contexto para pruebas
@@ -13,5 +12,5 @@ def before_all(context):
 
 def after_all(context):
     db.session.remove()
-    db.drop_all()  # Elimina todas las tablas de la base de datos después de las pruebas
+    #db.drop_all() 
     context.app_context.pop()
