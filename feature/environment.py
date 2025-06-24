@@ -12,5 +12,5 @@ def before_all(context):
 
 def after_all(context):
     db.session.remove()
-    #db.drop_all() 
+    db.drop_all() 
     context.app_context.pop()

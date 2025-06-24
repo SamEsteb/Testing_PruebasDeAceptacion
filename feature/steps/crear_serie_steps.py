@@ -1,6 +1,7 @@
 from behave import given, when, then
 from database.models import Serie, Supervisor
 from DBManager import db
+from app.services.serie_service import SerieService
 
 @given('soy un profesor autenticado')
 def step_impl(context):
@@ -17,19 +18,21 @@ def step_impl(context, nombre):
 
 @when('presiono el botón de crear serie')
 def step_impl(context):
-    nueva_serie = Serie(nombre=context.serie_data['nombre'], activa=context.serie_data['activa'])
-    db.session.add(nueva_serie)
-    db.session.commit()
+    nueva_serie = SerieService.create_serie(
+        nombre=context.serie_data['nombre'],
+        activa=context.serie_data['activa'],
+        profesor_id=context.profesor.id
+    )
     context.serie_creada = nueva_serie
 
 @then('la serie debe guardarse en la base de datos')
 def step_impl(context):
-    serie = Serie.query.filter_by(nombre=context.serie_data['nombre']).first()
+    serie = SerieService.get_serie_by_nombre(context.serie_data['nombre'])
     assert serie is not None
     assert serie.activa == True
 
 @then('debo ver la serie en el listado')
 def step_impl(context):
-    series = Serie.query.all()
+    series = SerieService.get_all_series()
     nombres_series = [s.nombre for s in series]
     assert context.serie_data['nombre'] in nombres_series
