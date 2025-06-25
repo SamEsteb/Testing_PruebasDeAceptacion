@@ -14,6 +14,9 @@ class SerieService:
         try:
             if not nombre or nombre.strip() == "":
                 raise ValueError("El nombre de la serie es requerido")
+            
+            if not grupo_nombre or grupo_nombre.strip() == "":
+                raise ValueError("La serie se debe asignar a un grupo")
 
             if grupo_nombre:
                 existing_serie = Serie.query.filter_by(nombre=nombre).first()
