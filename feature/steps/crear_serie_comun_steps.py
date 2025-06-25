@@ -1,4 +1,3 @@
-# features/steps/crear_serie_comun_steps.py
 from behave import given, when, then
 from database.models import Supervisor
 from DBManager import db

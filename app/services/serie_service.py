@@ -9,8 +9,12 @@ class SerieService:
         Crea una nueva serie de ejercicios y opcionalmente la asigna a un grupo
         interactuando directamente con la tabla de asociación.
         No se puede crear una serie ya existente o con el mismo nombre en el mismo grupo.
+        No se puede crear una serie con nombre vacío.
         """
         try:
+            if not nombre or nombre.strip() == "":
+                raise ValueError("El nombre de la serie es requerido")
+
             if grupo_nombre:
                 existing_serie = Serie.query.filter_by(nombre=nombre).first()
                 existing_grupo = Grupo.query.filter_by(nombre=grupo_nombre).first()
