@@ -19,3 +19,11 @@ Feature: Crear series de ejercicios
     And presiono el botón de crear serie
     Then la serie "Serie de Álgebra" no debe duplicarse en la base de datos
     And debo ver un mensaje de error indicando "Ya existe una serie con ese nombre asignada a este grupo."
+  
+  Scenario: Intentar crear una serie sin proporcionar un nombre
+    Given soy un profesor autenticado
+    When dejo el campo de nombre vacío, activo la serie y la asigno al grupo "Grupo Temporal"
+    And presiono el botón de crear serie
+    Then la serie no debe guardarse en la base de datos
+    And debo ver un mensaje de error indicando "El nombre de la serie es requerido"
+    And no debo ver la serie en el listado

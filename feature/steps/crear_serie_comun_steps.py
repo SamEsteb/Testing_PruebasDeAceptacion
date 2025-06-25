@@ -2,6 +2,7 @@
 from behave import given, when, then
 from database.models import Supervisor
 from DBManager import db
+from app.services.serie_service import SerieService 
 
 @given('soy un profesor autenticado')
 def step_impl(context):
@@ -48,6 +49,16 @@ def step_impl(context):
         context.response = {'message': f"Error inesperado al crear serie: {e}", 'status': 500}
         context.error_occurred = True
         print(f"Error inesperado al crear serie: {e}. Respuesta: {context.response}")
+
+@then('la serie no debe guardarse en la base de datos')
+def step_impl(context):
+    """
+    Verifica que la serie que se intentó crear no existe en la base de datos.
+    """
+    nombre_intento = context.serie_data['nombre']
+    serie = SerieService.get_serie_by_nombre(nombre_intento)
+    assert serie is None, f"La serie '{nombre_intento}' fue encontrada en la base de datos, cuando no debería."
+    print(f"Verificación: La serie '{nombre_intento}' no se guardó en la DB.")
 
 @then('debo ver un mensaje de éxito')
 def step_impl(context):
