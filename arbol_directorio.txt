@@ -12,6 +12,7 @@
         [D] routes/
             [A] __init__.py
         [D] services/
+            [A] serie_service.py
             [A] __init__.py
     [D] database/
         [A] models.py
@@ -19,6 +20,6 @@
         [A] crear_serie.feature
         [A] environment.py
         [D] steps/
-            [A] step_crear_serie.py
+            [A] crear_serie_steps.py
     [D] instance/
         [A] database.db

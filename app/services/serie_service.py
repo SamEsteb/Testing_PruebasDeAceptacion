@@ -1,37 +1,82 @@
+from database.models import Serie, Grupo, Curso, serie_asignada 
 from DBManager import db
-from database.models import Serie, Supervisor # Make sure these imports are correct based on your file structure
+from sqlalchemy import text
 
 class SerieService:
     @staticmethod
-    def create_serie(nombre: str, activa: bool) -> Serie:
+    def create_serie(nombre, activa, grupo_nombre=None):
+        """
+        Crea una nueva serie de ejercicios y opcionalmente la asigna a un grupo
+        interactuando directamente con la tabla de asociación.
+        """
         try:
-            new_serie = Serie(nombre=nombre, activa=activa)
-            db.session.add(new_serie)
-            db.session.commit()
-            db.session.refresh(new_serie)
+            new_serie = Serie.query.filter_by(nombre=nombre).first()
+            if not new_serie:
+                new_serie = Serie(nombre=nombre, activa=activa)
+                db.session.add(new_serie)
+                db.session.commit()
+                db.session.refresh(new_serie)
 
-            print(f"Serie '{nombre}' created successfully with ID: {new_serie.id}")
+            if grupo_nombre:
+                grupo = Grupo.query.filter_by(nombre=grupo_nombre).first()
+
+                if not grupo:
+                    dummy_curso = Curso.query.filter_by(nombre="Curso General Para Grupos").first()
+                    if not dummy_curso:
+                        dummy_curso = Curso(nombre="Curso General Para Grupos", activa=True)
+                        db.session.add(dummy_curso)
+                        db.session.commit()
+                        db.session.refresh(dummy_curso)
+                    
+                    grupo = Grupo(nombre=grupo_nombre, id_curso=dummy_curso.id)
+                    db.session.add(grupo)
+                    db.session.commit()
+                    db.session.refresh(grupo)
+
+                assignment_exists = db.session.query(serie_asignada).filter(
+                    serie_asignada.c.id_serie == new_serie.id,
+                    serie_asignada.c.id_grupo == grupo.id
+                ).first()
+
+                if not assignment_exists:
+                    insert_stmt = serie_asignada.insert().values(
+                        id_serie=new_serie.id, 
+                        id_grupo=grupo.id
+                    )
+                    db.session.execute(insert_stmt)
+                    db.session.commit()
+            
             return new_serie
         except Exception as e:
             db.session.rollback()
-            print(f"Error creating series '{nombre}': {e}")
-            raise 
+            print(f"Error al crear serie o asignarla a un grupo: {e}")
+            raise e
 
     @staticmethod
-    def get_serie_by_nombre(nombre: str) -> Serie | None:
-        try:
-            serie = Serie.query.filter_by(nombre=nombre).first()
-            return serie
-        except Exception as e:
-            print(f"Error retrieving series by name '{nombre}': {e}")
-            return None
+    def get_serie_by_nombre(nombre):
+        """Obtiene una serie por su nombre."""
+        return Serie.query.filter_by(nombre=nombre).first()
 
     @staticmethod
-    def get_all_series() -> list[Serie]:
-        try:
-            all_series = Serie.query.all()
-            return all_series
-        except Exception as e:
-            print(f"Error retrieving all series: {e}")
-            return []
+    def get_all_series():
+        """Obtiene todas las series."""
+        return Serie.query.all()
 
+    @staticmethod
+    def is_serie_assigned_to_group(serie_nombre, grupo_nombre):
+        """
+        Verifica si una serie está asignada a un grupo específico
+        consultando directamente la tabla de asociación.
+        """
+        serie = Serie.query.filter_by(nombre=serie_nombre).first()
+        grupo = Grupo.query.filter_by(nombre=grupo_nombre).first()
+
+        if not serie or not grupo:
+            return False
+        
+        assignment_exists = db.session.query(serie_asignada).filter(
+            serie_asignada.c.id_serie == serie.id,
+            serie_asignada.c.id_grupo == grupo.id
+        ).first()
+
+        return assignment_exists is not None
