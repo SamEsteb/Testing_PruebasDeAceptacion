@@ -18,3 +18,8 @@ Feature: Asignar estudiantes a grupos
         Given existe un estudiante "S003" asignado al grupo "Grupo C" del curso "102"
         When remuevo al estudiante "S003" del grupo "Grupo C" del curso "102"
         Then debería ver un mensaje de éxito por remoción
+
+    Scenario: Intentar remover estudiante de un grupo al que no pertenece
+        Given existe un estudiante "S004" y un grupo "Grupo D" del curso "103"
+        When intento remover al estudiante "S004" del grupo "Grupo D" del curso "103"
+        Then debería ver un mensaje de error "El estudiante no pertenece a este grupo."
