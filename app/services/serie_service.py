@@ -77,6 +77,13 @@ class SerieService:
         return Serie.query.filter_by(nombre=nombre).first()
 
     @staticmethod
+    def get_serie_by_id(serie_id):
+        """Obtiene una serie por su ID."""
+        if not serie_id or serie_id <= 0:
+            raise ValueError("ID de serie inválido")
+        return Serie.query.get(serie_id)
+
+    @staticmethod
     def get_all_series():
         """Obtiene todas las series."""
         return Serie.query.all()

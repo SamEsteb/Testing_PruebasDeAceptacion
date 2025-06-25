@@ -20,6 +20,10 @@
         [A] crear_serie.feature
         [A] environment.py
         [D] steps/
-            [A] crear_serie_steps.py
+            [A] crear_serie_comun_steps.py
+            [A] crear_serie_duplicado_steps.py
+            [A] crear_serie_exitosamente_steps.py
+            [A] crear_serie_sin_grupo_steps.py
+            [A] crear_serie_sin_nombre_steps.py
     [D] instance/
         [A] database.db

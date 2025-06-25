@@ -28,7 +28,6 @@ def step_impl(context):
     """
     Simula la acción de presionar el botón de crear serie.
     """
-    from app.services.serie_service import SerieService
     try:
         nueva_serie = SerieService.create_serie(
             nombre=context.serie_data['nombre'],
