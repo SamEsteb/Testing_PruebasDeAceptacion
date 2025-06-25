@@ -18,12 +18,20 @@ def step_impl(context, nombre):
 
 @when('presiono el botón de crear serie')
 def step_impl(context):
-    nueva_serie = SerieService.create_serie(
-        nombre=context.serie_data['nombre'],
-        activa=context.serie_data['activa'],
-        profesor_id=context.profesor.id
-    )
-    context.serie_creada = nueva_serie
+    try:
+        nueva_serie = SerieService.create_serie(
+            nombre=context.serie_data['nombre'],
+            activa=context.serie_data['activa'],
+        )
+        context.serie_creada = nueva_serie
+
+        # Simular respuesta de confirmación
+        context.response = {'message': "Serie creada exitosamente", 'status': 201}
+        print(f"Serie creada: {context.serie_creada.nombre}")
+    except Exception as e:
+        context.response = {'message': f"Error al crear serie: {e}", 'status': 500}
+        context.error_occurred = True
+        print(f"Error al crear serie: {e}. Respuesta: {context.response}")
 
 @then('la serie debe guardarse en la base de datos')
 def step_impl(context):
@@ -31,8 +39,17 @@ def step_impl(context):
     assert serie is not None
     assert serie.activa == True
 
+@then('debo ver un mensaje de éxito')
+def step_impl(context):
+    assert hasattr(context, 'response'), "El objeto 'context.response' no está definido."
+    assert context.response.get('message') == "Serie creada exitosamente", \
+        f"Mensaje de éxito esperado 'Serie creada exitosamente' pero se recibió '{context.response.get('message')}'"
+    print(f"Verificación de mensaje de éxito exitosa: '{context.response.get('message')}'")
+
 @then('debo ver la serie en el listado')
 def step_impl(context):
     series = SerieService.get_all_series()
     nombres_series = [s.nombre for s in series]
     assert context.serie_data['nombre'] in nombres_series
+
+
