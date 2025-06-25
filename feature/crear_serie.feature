@@ -27,3 +27,11 @@ Feature: Crear series de ejercicios
     Then la serie no debe guardarse en la base de datos
     And debo ver un mensaje de error indicando "El nombre de la serie es requerido"
     And no debo ver la serie en el listado
+  
+  Scenario: Intentar crear una serie sin asignarla a ningún grupo
+    Given soy un profesor autenticado
+    When ingreso el nombre "Serie Sin Asignar" y activo la serie sin asignarla a ningún grupo
+    And presiono el botón de crear serie
+    Then la serie no debe guardarse en la base de datos
+    And debo ver un mensaje de error indicando "La serie se debe asignar a un grupo"
+    And no debo ver la serie en el listado

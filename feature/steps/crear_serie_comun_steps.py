@@ -59,6 +59,16 @@ def step_impl(context):
     assert serie is None, f"La serie '{nombre_intento}' fue encontrada en la base de datos, cuando no debería."
     print(f"Verificación: La serie '{nombre_intento}' no se guardó en la DB.")
 
+@then('no debo ver la serie en el listado')
+def step_impl(context):
+    """
+    Verifica que la serie no aparece en el listado de series.
+    """
+    nombre_intento = context.serie_data['nombre']
+    series = SerieService.get_all_series()
+    assert not any(serie.nombre == nombre_intento for serie in series), \
+        f"La serie '{nombre_intento}' fue encontrada en el listado, cuando no debería."
+
 @then('debo ver un mensaje de éxito')
 def step_impl(context):
     """
