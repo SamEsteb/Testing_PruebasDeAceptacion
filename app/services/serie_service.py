@@ -8,8 +8,20 @@ class SerieService:
         """
         Crea una nueva serie de ejercicios y opcionalmente la asigna a un grupo
         interactuando directamente con la tabla de asociación.
+        No se puede crear una serie ya existente o con el mismo nombre en el mismo grupo.
         """
         try:
+            if grupo_nombre:
+                existing_serie = Serie.query.filter_by(nombre=nombre).first()
+                existing_grupo = Grupo.query.filter_by(nombre=grupo_nombre).first()
+                if existing_serie and existing_grupo:
+                    assignment_exists = db.session.query(serie_asignada).filter(
+                        serie_asignada.c.id_serie == existing_serie.id,
+                        serie_asignada.c.id_grupo == existing_grupo.id
+                    ).first()
+                    if assignment_exists:
+                        raise ValueError("Ya existe una serie con ese nombre asignada a este grupo.")
+
             new_serie = Serie.query.filter_by(nombre=nombre).first()
             if not new_serie:
                 new_serie = Serie(nombre=nombre, activa=activa)
