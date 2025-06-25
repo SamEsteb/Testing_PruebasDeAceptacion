@@ -3,47 +3,53 @@ from sqlalchemy.exc import IntegrityError
 
 
 def asignar_estudiante_a_grupo(estudiante_data: dict, grupo_data: dict):
-    """
-    Intenta asignar un estudiante a un grupo existente.
-    Este servicio **asume que el estudiante y el grupo YA DEBEN EXISTIR** para la asignación.
-    Si no existen, retorna un error apropiado (404).
-    """
     matricula_estudiante = estudiante_data.get('matricula')
     nombre_grupo = grupo_data.get('nombre')
     id_curso = grupo_data.get('id_curso')
 
-    print(f"DEBUG: Intentando asignar estudiante '{matricula_estudiante}' al grupo '{nombre_grupo}' (Curso: {id_curso})")
+    print(f"DEBUG_SERVICE: Intentando asignar estudiante '{matricula_estudiante}' al grupo '{nombre_grupo}' (Curso: {id_curso})")
 
-    # Buscar estudiante por matrícula. Si no existe, retornar error.
-    # No crear estudiante aquí, pues el escenario es para un estudiante que *no* existe.
     estudiante = verificar_existencia_estudiante(matricula_estudiante)
     if not estudiante:
-        print(f"DEBUG: Estudiante con matrícula '{matricula_estudiante}' no encontrado.")
-        db.session.rollback() # Limpia la sesión si hay operaciones pendientes
+        print(f"DEBUG_SERVICE: Estudiante con matrícula '{matricula_estudiante}' no encontrado.")
+        db.session.rollback()
         return {"mensaje": f"El estudiante con matrícula '{matricula_estudiante}' no existe."}, 404
 
-    # Buscar grupo por nombre y curso. Si no existe, retornar error.
-    # No crear grupo aquí.
     grupo = verificar_existencia_grupo(nombre_grupo, id_curso)
     if not grupo:
-        print(f"DEBUG: Grupo '{nombre_grupo}' para curso '{id_curso}' no encontrado.")
+        print(f"DEBUG_SERVICE: Grupo '{nombre_grupo}' para curso '{id_curso}' no encontrado.")
         db.session.rollback()
         return {"mensaje": f"El grupo '{nombre_grupo}' para el curso '{id_curso}' no existe."}, 404
 
 
-    #Asignar al grupo
+    db.session.refresh(estudiante) 
+
+   
+    for g in estudiante.grupos:
+        if g.id_curso == grupo.id_curso:
+        
+            if g.id != grupo.id: 
+                print(f"DEBUG_SERVICE: El estudiante '{matricula_estudiante}' ya pertenece a otro grupo ({g.nombre}) del curso {grupo.id_curso}.")
+                db.session.rollback()
+                return {"error": "El estudiante ya pertenece a un grupo de este curso"}, 400
+            else: 
+                print(f"DEBUG_SERVICE: El estudiante '{matricula_estudiante}' ya está asignado al grupo '{grupo.nombre}' ({grupo.id_curso}).")
+                db.session.rollback()
+                return {"mensaje": "El estudiante ya está asignado a este grupo."}, 409 # Conflicto
+
+    
     try:
         grupo.estudiantes.append(estudiante)
         db.session.commit()
-        print(f"DEBUG: Estudiante '{matricula_estudiante}' asignado a '{nombre_grupo}' exitosamente.")
+        print(f"DEBUG_SERVICE: Estudiante '{matricula_estudiante}' asignado a '{nombre_grupo}' exitosamente.")
         return {"mensaje": "Estudiante asignado correctamente"}, 200
     except IntegrityError as e:
         db.session.rollback()
-        print(f"DEBUG: Error de integridad al asignar: {e}")
+        print(f"DEBUG_SERVICE: Error de integridad al asignar: {e}")
         return {"error": "Error de base de datos al asignar el estudiante. Podría ser una duplicidad."}, 500
     except Exception as e:
         db.session.rollback()
-        print(f"DEBUG: Error inesperado al asignar: {e}")
+        print(f"DEBUG_SERVICE: Error inesperado al asignar: {e}")
         return {"error": f"Ocurrió un error inesperado: {str(e)}"}, 500
 
 def verificar_existencia_estudiante(matricula: str) -> Estudiante | None:
@@ -100,3 +106,46 @@ def crear_grupo_para_test(grupo_data: dict) -> Grupo:
         print(f"DEBUG: Grupo {grupo_data['nombre']} (curso {grupo_data['id_curso']}) ya existe.")
     return grupo
 
+def remover_estudiante_de_grupo(estudiante_data: dict, grupo_data: dict):
+    """
+    Remueve un estudiante de un grupo específico.
+    Retorna un mensaje de éxito si la remoción es exitosa, o un error si no se encuentra
+    al estudiante/grupo o si el estudiante no pertenece al grupo.
+    """
+    matricula_estudiante = estudiante_data.get('matricula')
+    nombre_grupo = grupo_data.get('nombre')
+    id_curso = grupo_data.get('id_curso')
+
+    print(f"DEBUG_SERVICE: Intentando remover estudiante '{matricula_estudiante}' del grupo '{nombre_grupo}' (Curso: {id_curso})")
+
+  
+    estudiante = verificar_existencia_estudiante(matricula_estudiante)
+    if not estudiante:
+        print(f"DEBUG_SERVICE: Estudiante con matrícula '{matricula_estudiante}' no encontrado para remoción.")
+        db.session.rollback()
+        return {"mensaje": f"El estudiante con matrícula '{matricula_estudiante}' no existe."}, 404
+
+   
+    grupo = verificar_existencia_grupo(nombre_grupo, id_curso)
+    if not grupo:
+        print(f"DEBUG_SERVICE: Grupo '{nombre_grupo}' para curso '{id_curso}' no encontrado para remoción.")
+        db.session.rollback()
+        return {"mensaje": f"El grupo '{nombre_grupo}' para el curso '{id_curso}' no existe."}, 404
+
+  
+    db.session.refresh(estudiante)
+    if grupo not in estudiante.grupos:
+        print(f"DEBUG_SERVICE: Estudiante '{matricula_estudiante}' no pertenece al grupo '{nombre_grupo}'.")
+        db.session.rollback()
+        return {"error": "El estudiante no pertenece a este grupo."}, 400
+
+   
+    try:
+        grupo.estudiantes.remove(estudiante)
+        db.session.commit()
+        print(f"DEBUG_SERVICE: Estudiante '{matricula_estudiante}' removido de '{nombre_grupo}' exitosamente.")
+        return {"mensaje": "Estudiante removido del grupo correctamente"}, 200
+    except Exception as e:
+        db.session.rollback()
+        print(f"DEBUG_SERVICE: Error inesperado al remover estudiante: {e}")
+        return {"error": f"Ocurrió un error inesperado al remover: {str(e)}"}, 500

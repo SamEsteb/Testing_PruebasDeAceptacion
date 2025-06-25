@@ -13,3 +13,8 @@ Feature: Asignar estudiantes a grupos
         Given existe un grupo con nombre "Grupo 1" y curso "101"
         When intento asignar al estudiante "A999" al grupo
         Then debería ver un mensaje de error indicando que el estudiante no existe
+
+    Scenario: Remover estudiante de un grupo correctamente
+        Given existe un estudiante "S003" asignado al grupo "Grupo C" del curso "102"
+        When remuevo al estudiante "S003" del grupo "Grupo C" del curso "102"
+        Then debería ver un mensaje de éxito por remoción
