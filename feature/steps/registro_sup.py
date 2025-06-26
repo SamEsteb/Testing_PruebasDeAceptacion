@@ -1,5 +1,5 @@
 from behave import given, when, then # type: ignore
-
+from app.services.user_service import registro_supervisor
 from database.models import Supervisor
 
 @when('ingreso un correo electrónico único "{correo}"')
@@ -9,9 +9,13 @@ def step_impl(context, correo):
 
 @when('hago clic en el botón "Registrar Supervisor"')
 def step_impl(context):
-   
-    # Usamos el cliente de prueba para llamar a la URL correcta.
-    context.response = context.client.post('/registro/supervisor', data=context.form_data)
+
+    supervisor = registro_supervisor(context.form_data)
+    context.response = supervisor
+    if supervisor:
+        context.response.status_code = 201
+    else:
+        context.response.status_code = 400
 
 @then("un nuevo registro de 'Supervisor' debe existir en la base de datos con el correo \"{correo}\"")
 def step_impl(context, correo):

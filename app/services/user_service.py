@@ -2,7 +2,7 @@ from werkzeug.security import generate_password_hash
 from sqlalchemy.exc import IntegrityError
 
 #Se importan los modelos necesarios que son el de Estudiante y el de Supervisor
-from database.models import Estudiante,db
+from database.models import Estudiante,db, Supervisor
 def registro_estudiante(datos_formulario):
     #Logica para crear un nuevo estudiante en la base de datos
     # 1. Validar si el correo ya existe en CUALQUIERA de las tablas de usuario
@@ -18,7 +18,7 @@ def registro_estudiante(datos_formulario):
 
     # 3. Crear la instancia del nuevo estudiante con los datos validados
     nuevo_estudiante = Estudiante(
-        nombres=datos_formulario['nombre'],
+        nombres=datos_formulario['nombres'],
         apellidos=datos_formulario['apellidos'],
         matricula=datos_formulario['matricula'],
         correo=datos_formulario['correo'],
@@ -39,3 +39,31 @@ def registro_estudiante(datos_formulario):
     # 5. Devolver el objeto recién creado
 
     return nuevo_estudiante
+
+def registro_supervisor(datos_formulario):
+    # 1. Validar si el correo ya existe en la tabla de Supervisor
+    correo_existente = Supervisor.query.filter_by(correo=datos_formulario['correo']).first()
+    if correo_existente:
+        raise ValueError("El correo electrónico ya está en uso.")
+
+    # 2. Hashear la contraseña
+    password_hasheada = generate_password_hash(datos_formulario['password'], method='pbkdf2:sha256')
+
+    # 3. Crear la instancia del nuevo supervisor
+    nuevo_supervisor = Supervisor(
+        nombres=datos_formulario['nombres'],
+        apellidos=datos_formulario['apellidos'],
+        correo=datos_formulario['correo'],
+        password=password_hasheada
+    )
+
+    # 4. Intentar guardar en la base de datos
+    try:
+        db.session.add(nuevo_supervisor)
+        db.session.commit()
+    except IntegrityError:
+        db.session.rollback()
+        raise Exception("Error de base de datos al crear el supervisor.")
+
+    # 5. Devolver el objeto recién creado
+    return nuevo_supervisor

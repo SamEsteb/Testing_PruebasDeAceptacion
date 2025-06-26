@@ -11,7 +11,7 @@ def step_impl(context):
 @when('ingreso un nombre válido "{nombre}"')
 def step_impl(context, nombre):
     # Almacenamos el nombre en el diccionario del contexto
-    context.form_data['nombre'] = nombre
+    context.form_data['nombres'] = nombre
 
 @when('ingreso un apellido válido "{apellidos}"')
 def step_impl(context, apellidos):
@@ -40,15 +40,11 @@ def step_impl(context, carrera):
 
 @when('hago clic en el botón "Registrar Estudiante"')
 def step_impl(context):
-    # Simulamos el envío del formulario de registro
-
-    # context.response = context.app.test_client().post('/registro/estudiante', data=context.form_data)
     estudiante = registro_estudiante(context.form_data)
-    if(estudiante):
-        # Si el registro es exitoso, se devuelve un objeto Estudiante
+    context.response = estudiante
+    if estudiante:
         context.response.status_code = 201
     else:
-        # Si hay un error, se devuelve un código de error
         context.response.status_code = 400
 
 @then('soy redirigido a la página de inicio de sesión o mi sesión se inicia automáticamente')
@@ -66,7 +62,7 @@ def step_impl(context, correo):
     assert estudiante is not None, f"No se encontró un estudiante con el correo {correo}"
     
     # Verificamos que los datos del estudiante coincidan con los del formulario
-    assert estudiante.nombres == context.form_data['nombre'], "El nombre del estudiante no coincide"
+    assert estudiante.nombres == context.form_data['nombres'], "El nombre del estudiante no coincide"
     assert estudiante.apellidos == context.form_data['apellidos'], "El apellido del estudiante no coincide"
     assert estudiante.matricula == context.form_data['matricula'], "La matrícula del estudiante no coincide"
     assert estudiante.carrera == context.form_data['carrera'], "La carrera del estudiante no coincide"
