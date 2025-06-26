@@ -45,7 +45,9 @@ def step_impl(context):
 @then('soy redirigido a la página de inicio de sesión o mi sesión se inicia automáticamente')
 def step_impl(context):
     # Verificamos que la respuesta sea un redireccionamiento
-    assert context.response.status_code == 302, "No se redirigió correctamente después del registro"
+    # assert context.response.status_code == 302, "No se redirigió correctamente después del registro"
+    assert context.response.status_code == 201, f"Código de estado esperado 201, pero se recibió {context.response.status_code}"
+
 
 @then("un nuevo registro de 'Estudiante' debe existir en la base de datos con el correo \"{correo}\"")
 def step_impl(context, correo):

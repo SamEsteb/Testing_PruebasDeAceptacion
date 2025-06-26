@@ -6,6 +6,8 @@ def before_all(context):
     context.app = create_app()
     context.app_context = context.app.app_context()
     context.app_context.push()
+    # Esta línea es la que crea el 'context.client' que faltaba en tu segundo escenario.
+    context.client = context.app.test_client()
 
 def after_all(context):
     db.session.remove()
