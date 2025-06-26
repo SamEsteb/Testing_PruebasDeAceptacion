@@ -37,7 +37,7 @@ Para ejecutar las pruebas de aceptación, se deben utilizar los siguientes archi
 
 - `crear_serie.feature`
 - `asignar_grupos.feature`
-
+- `subir_solucion.feature`
 Estas pruebas cubren las siguientes Historias de Usuario (HU):
 
 - **Como profesor, quiero crear y definir nuevas series de ejercicios, y poder asignarlas a los grupos que superviso, para organizar actividades para mis estudiantes.**
