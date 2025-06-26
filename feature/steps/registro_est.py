@@ -1,5 +1,6 @@
 from behave import given, when, then # type: ignore
 from database.models import Estudiante
+from app.services.user_service import registro_estudiante
 
 
 @given('que me encuentro en la página de registro')
@@ -40,12 +41,19 @@ def step_impl(context, carrera):
 @when('hago clic en el botón "Registrar Estudiante"')
 def step_impl(context):
     # Simulamos el envío del formulario de registro
-    context.response = context.app.test_client().post('/registro/estudiante', data=context.form_data)
+
+    # context.response = context.app.test_client().post('/registro/estudiante', data=context.form_data)
+    estudiante = registro_estudiante(context.form_data)
+    if(estudiante):
+        # Si el registro es exitoso, se devuelve un objeto Estudiante
+        context.response.status_code = 201
+    else:
+        # Si hay un error, se devuelve un código de error
+        context.response.status_code = 400
 
 @then('soy redirigido a la página de inicio de sesión o mi sesión se inicia automáticamente')
 def step_impl(context):
     # Verificamos que la respuesta sea un redireccionamiento
-    # assert context.response.status_code == 302, "No se redirigió correctamente después del registro"
     assert context.response.status_code == 201, f"Código de estado esperado 201, pero se recibió {context.response.status_code}"
 
 

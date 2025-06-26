@@ -18,7 +18,7 @@ def registro_estudiante(datos_formulario):
 
     # 3. Crear la instancia del nuevo estudiante con los datos validados
     nuevo_estudiante = Estudiante(
-        nombres=datos_formulario['nombres'],
+        nombres=datos_formulario['nombre'],
         apellidos=datos_formulario['apellidos'],
         matricula=datos_formulario['matricula'],
         correo=datos_formulario['correo'],
