@@ -1,5 +1,7 @@
 # Asegúrate de que estos imports estén al principio de tu archivo
-from behave import given, when, then
+from behave import given, when, then # type: ignore
+import json
+
 from werkzeug.security import generate_password_hash
 from database.models import db, Estudiante, Supervisor
 

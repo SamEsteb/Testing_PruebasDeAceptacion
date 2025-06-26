@@ -33,7 +33,7 @@ Feature: Registro de un nuevo ususario den el sistema
         And no se debe crear un nuevo registro de 'Supervisor' en la base de datos
     
     Scenario: La contraseña debe cumplir con los requisitos de seguridad
-        Given que me encontro en la página de registro
+        Given que me encuentro en la página de registro
         When ingreso un nombre válido "<nombre>"
         And ingreso un apellido válido "<apellido>"
         And ingreso un correo electrónico único "<correo>"
