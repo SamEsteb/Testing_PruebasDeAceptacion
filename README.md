@@ -4,7 +4,7 @@ Este repositorio contiene la implementación de pruebas de aceptación para un p
 
 ## Requisitos Previos
 
-- Python instalado (recomendado 3.8+)
+- Python instalado (versión utilizada: 3.11)
 - pip actualizado
 
 ## Instalación
@@ -33,4 +33,28 @@ python main.py
 
 ## Ejecución de Pruebas de Aceptación
 
-...
+Para ejecutar las pruebas de aceptación, se deben utilizar los siguientes archivos feature:
+
+- `crear_serie.feature`
+- `asignar_grupos.feature`
+
+Estas pruebas cubren las siguientes Historias de Usuario (HU):
+
+- **Como profesor, quiero crear y definir nuevas series de ejercicios, y poder asignarlas a los grupos que superviso, para organizar actividades para mis estudiantes.**
+- **Como profesor, quiero asignar estudiantes a grupos existentes para que puedan resolver series de ejercicios.**
+
+Cada una de estas implementaciones está documentada paso a paso en los commits de las ramas `sam` y `Juan`:
+- En la rama **sam** se encuentra la implementación de crear y asignar series.
+- En la rama **Juan** se encuentra la implementación de asignar estudiantes a grupos.
+
+Se pueden recorrer los commits de estas ramas para ver el proceso de desarrollo y ejecución de pruebas usando Behave.
+
+Para ejecutar las pruebas, se utiliza el siguiente comando:
+
+```bash
+behave features/nombre_archivo.feature
+```
+
+Se debe reemplazar *nombre_archivo* por el archivo .feature a testear.
+
+--- No es necesario tener el servidor en ejecución para correr Behave ---
