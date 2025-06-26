@@ -25,10 +25,19 @@ Feature: Registro de un nuevo ususario den el sistema
         Then soy redirigido a la página de inicio de sesión o mi sesión se inicia automáticamente
         And un nuevo registro de 'Supervisor' debe existir en la base de datos con el correo "ana.govega@usuper.com"
 
-     Scenario: Intento de registro con correo electrónico ya existente
+    Scenario: Intento de registro con correo electrónico ya existente
         Given que ya existe un 'Estudiante' con el correo electrónico "pablo.neruda@uest.com"
         And me encuentro en la página de registro
         When intento registrar un 'Supervisor' con el correo electrónico "pablo.neruda@uest.com"
         Then el sistema debe mostrar un mensaje de error indicando que el correo electrónico ya está en uso
         And no se debe crear un nuevo registro de 'Supervisor' en la base de datos
     
+    Scenario: La contraseña debe cumplir con los requisitos de seguridad
+        Given que me encontro en la página de registro
+        When ingreso un nombre válido "<nombre>"
+        And ingreso un apellido válido "<apellido>"
+        And ingreso un correo electrónico único "<correo>"
+        And ingreso una contraseña "<contraseña>"
+        And hago clic en el botón "Registrar Estudiante"
+        Then el sistema debe mostrar un mensaje de error indicando que la contraseña no cumple con los requisitos de seguridad
+        And no se debe crear un nuevo registro de 'Estudiante' en la base de datos
