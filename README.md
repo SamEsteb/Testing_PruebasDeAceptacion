@@ -37,11 +37,12 @@ Para ejecutar las pruebas de aceptación, se deben utilizar los siguientes archi
 
 - `crear_serie.feature`
 - `asignar_grupos.feature`
-
+- `subir_solucion.feature`
 Estas pruebas cubren las siguientes Historias de Usuario (HU):
 
 - **Como profesor, quiero crear y definir nuevas series de ejercicios, y poder asignarlas a los grupos que superviso, para organizar actividades para mis estudiantes.**
 - **Como profesor, quiero asignar estudiantes a grupos existentes para que puedan resolver series de ejercicios.**
+- **Como estudiante, quiero poder subir mi solucion a un ejercicio dado.**
 
 Cada una de estas implementaciones está documentada paso a paso en los commits de las ramas `sam` y `Juan`:
 - En la rama **sam** se encuentra la implementación de crear y asignar series.
