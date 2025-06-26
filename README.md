@@ -38,15 +38,21 @@ Para ejecutar las pruebas de aceptación, se deben utilizar los siguientes archi
 - `crear_serie.feature`
 - `asignar_grupos.feature`
 - `subir_solucion.feature`
+- `registro_usuario.feature`
+
 Estas pruebas cubren las siguientes Historias de Usuario (HU):
 
 - **Como profesor, quiero crear y definir nuevas series de ejercicios, y poder asignarlas a los grupos que superviso, para organizar actividades para mis estudiantes.**
 - **Como profesor, quiero asignar estudiantes a grupos existentes para que puedan resolver series de ejercicios.**
-- **Como estudiante, quiero poder subir mi solucion a un ejercicio dado.**
+- **Como estudiante, quiero poder subir mi solucion a un ejercicio dado para que el profesor pueda evaluarme**
+- **Como usuario nuevo, quiero registrarme en el sistema, para poder acceder a las funcionalidades según mi rol asignado (Estudiante/Supervisor).**
 
-Cada una de estas implementaciones está documentada paso a paso en los commits de las ramas `sam` y `Juan`:
+
+Cada una de estas implementaciones está documentada paso a paso en los commits de las ramas `sam`, `Juan`, `cristobal` y `pablo`:
 - En la rama **sam** se encuentra la implementación de crear y asignar series.
 - En la rama **Juan** se encuentra la implementación de asignar estudiantes a grupos.
+- En la rama **cristobal** se encuentra la implementación de subir_solucion.
+- En la rama **pablo** se encuentra la implementación de registro_usuario
 
 Se pueden recorrer los commits de estas ramas para ver el proceso de desarrollo y ejecución de pruebas usando Behave.
 
