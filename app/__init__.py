@@ -3,6 +3,7 @@ from flask import Flask
 from dotenv import load_dotenv
 from DBManager import init_app, db
 from app.routes.serie_routes import serie_bp
+from app.routes.asignar_grupo_routes import grupo_bp
 
 load_dotenv()
 
@@ -19,6 +20,6 @@ def create_app():
     init_app(app)
 
     app.register_blueprint(serie_bp)
+    app.register_blueprint(grupo_bp) 
 
     return app
-
